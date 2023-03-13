@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dependency\**" />
+    <Compile Remove="Entities\**" />
+    <Content Remove="Dependency\**" />
+    <Content Remove="Entities\**" />
+    <EmbeddedResource Remove="Dependency\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <None Remove="Dependency\**" />
+    <None Remove="Entities\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Logger.cs" />
   </ItemGroup>
 
@@ -16,6 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dapper.Extensions.NetCore" Version="4.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
@@ -30,9 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Dependency\" />
     <Folder Include="Context\" />
   </ItemGroup>
 

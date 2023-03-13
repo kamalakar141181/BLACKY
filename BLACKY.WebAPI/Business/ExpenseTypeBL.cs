@@ -2,7 +2,8 @@
 using BLACKY.WebAPI.Models;
 using Dapper;
 using System.Data;
-using static Dapper.SqlMapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BLACKY.WebAPI.Business
 {
@@ -15,7 +16,7 @@ namespace BLACKY.WebAPI.Business
             _sqlHelper = sqlHelper;
         }
 
-        public int Add(ExpenseTypeEntity expenseType)
+        public int Create(ExpenseTypeEntity expenseType)
         {
             int returnValue = 0;
             DynamicParameters dynamicParameters = new DynamicParameters();
@@ -33,17 +34,70 @@ namespace BLACKY.WebAPI.Business
             returnValue = dynamicParameters.Get<int>("ID");
             return returnValue;
         }
-        public int Delete(ExpenseTypeEntity expenseType)
+        
+        public List<ExpenseTypeEntity> GetByID(int? expenseTypeID)
         {
-            throw new NotImplementedException();
+            List<ExpenseTypeEntity> lstResult = new List<ExpenseTypeEntity>();
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            if (expenseTypeID > 0)
+            {
+                dynamicParameters.Add("ExpID", expenseTypeID, DbType.Int32, ParameterDirection.Input);
+            }
+            lstResult = _sqlHelper.GetData<ExpenseTypeEntity>("spGetExpenseTypeByID", dynamicParameters,CommandType.StoredProcedure);
+            return lstResult;
         }
-        public List<ExpenseTypeEntity> Get(int? id)
+
+        public List<ExpenseTypeEntity> GetByName(string? expenseTypeName)
         {
-            return _sqlHelper.GetData<ExpenseTypeEntity>("spGetExpenseTypes", _sqlHelper.CreateParameter("ID",id),CommandType.StoredProcedure);            
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            if(!string.IsNullOrEmpty(expenseTypeName))
+            {
+                dynamicParameters.Add("Name", expenseTypeName, DbType.String, ParameterDirection.Input);
+            }
+            
+            return _sqlHelper.GetData<ExpenseTypeEntity>("spGetExpenseTypeByName", dynamicParameters, CommandType.StoredProcedure);
         }
-        public int Update(ExpenseTypeEntity expenseType)
+        public bool Update(ExpenseTypeEntity expenseType)
         {
-            throw new NotImplementedException();
-        }        
+            bool isUpdated = false;
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.Add("IsSucceeded", 0, System.Data.DbType.Boolean, System.Data.ParameterDirection.Output);
+            dynamicParameters.Add("ID", expenseType.ID, DbType.Int32, System.Data.ParameterDirection.Input);
+            dynamicParameters.Add("Name", expenseType.Name, DbType.String, System.Data.ParameterDirection.Input);
+            dynamicParameters.Add("Description", expenseType.Description, DbType.String, System.Data.ParameterDirection.Input);            
+            dynamicParameters.Add("ModifiedBy", expenseType.ModifiedBy, DbType.String, System.Data.ParameterDirection.Input);            
+            dynamicParameters.Add("ModifiedDate", expenseType.ModifiedDate, DbType.DateTime, System.Data.ParameterDirection.Input);
+            _sqlHelper.SaveData("spUpdateExpenseType", dynamicParameters);
+            isUpdated = dynamicParameters.Get<bool>("IsSucceeded");
+            return isUpdated;
+        }
+
+        public bool Delete(ExpenseTypeEntity expenseType)
+        {
+            bool isDeleted = false;
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.Add("IsSucceeded", 0, System.Data.DbType.Boolean, System.Data.ParameterDirection.Output);
+            dynamicParameters.Add("ID", expenseType.ID, DbType.Int32, System.Data.ParameterDirection.Input);
+            dynamicParameters.Add("IsDeleted", expenseType.IsDeleted, DbType.Boolean, System.Data.ParameterDirection.Input);
+            dynamicParameters.Add("ModifiedBy", expenseType.ModifiedBy, DbType.String, System.Data.ParameterDirection.Input);
+            dynamicParameters.Add("ModifiedDate", expenseType.ModifiedDate, DbType.DateTime, System.Data.ParameterDirection.Input);
+
+            _sqlHelper.SaveData("spDeleteExpenseType", dynamicParameters);
+            isDeleted = dynamicParameters.Get<bool>("IsSucceeded");
+            return isDeleted;
+        }
+
+        // Hard Delete From Database
+        public bool Delete(int expenseTypeID)
+        {
+            bool isDeleted = false;
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.Add("IsSucceeded", 0, System.Data.DbType.Boolean, System.Data.ParameterDirection.Output);
+            dynamicParameters.Add("ID", expenseTypeID, DbType.Int32, System.Data.ParameterDirection.Input);            
+
+            _sqlHelper.SaveData("spHardDeleteExpenseType", dynamicParameters);
+            isDeleted = dynamicParameters.Get<bool>("IsSucceeded");
+            return isDeleted;
+        }
     }
 }

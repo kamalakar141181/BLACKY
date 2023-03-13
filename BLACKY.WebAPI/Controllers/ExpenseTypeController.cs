@@ -1,12 +1,7 @@
 ﻿using BLACKY.WebAPI.Business;
 using BLACKY.WebAPI.Models;
-using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
 using System.Net;
-using static Dapper.SqlMapper;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,8 +13,7 @@ namespace BLACKY.WebAPI.Controllers
     {
         private readonly AppDbContext dbContext;
         private readonly ILogger<ExpenseTypeController> logger;
-        private readonly IExpenseTypeBL expenseTypeBL;
-        //private readonly ILogger<ExpenseTypeController> logger;
+        private readonly IExpenseTypeBL expenseTypeBL;        
 
         public ExpenseTypeController(IExpenseTypeBL expenseTypeBL, AppDbContext dbContextSQL, ILogger<ExpenseTypeController> logger)
         {
@@ -28,54 +22,81 @@ namespace BLACKY.WebAPI.Controllers
             this.expenseTypeBL = expenseTypeBL;            
         }
 
-        [HttpPost("InsertExpenseType")]
-        public async Task<HttpStatusCode> InsertExpenseType(ExpenseTypeEntity expenseType)
+        [HttpPost("CreateExpenseType")]
+        public async Task<HttpStatusCode> Create(ExpenseTypeEntity expenseType)
         {
             logger.LogDebug("Hey, this is a DEBUG message.");
             logger.LogInformation("Hey, this is an INFO message.");
             logger.LogWarning("Hey, this is a WARNING message.");
             logger.LogError("Hey, this is an ERROR message.");
 
-
-            var entity = new ExpenseTypeEntity()
-            {
-                Name = expenseType.Name,
-                Description = expenseType.Description,
-                CreatedBy = expenseType.CreatedBy,
-                CreatedDate = expenseType.CreatedDate,
-                ModifiedBy = expenseType.ModifiedBy,
-                ModifiedDate = expenseType.ModifiedDate,
-                IsDeleted = expenseType.IsDeleted
-            };
-
-            int generatedID =  expenseTypeBL.Add(entity);
-
-            return HttpStatusCode.Created;
+            int generatedID =  expenseTypeBL.Create(expenseType);
+            if (generatedID > 0)
+                return HttpStatusCode.Created;
+            else
+                return HttpStatusCode.FailedDependency;
         }
+         
 
-
-        [HttpGet("GetExpenseTypeById")]
-        public async Task<ActionResult<ExpenseTypeEntity>> GetExpenseTypeById(int id)
+        [HttpGet("GetExpenseTypeByID")]
+        public async Task<ActionResult<ExpenseTypeEntity>> GetByID(int ID)
         {
             List<ExpenseTypeEntity> lstExpenseType = new List<ExpenseTypeEntity>();
-            lstExpenseType =  expenseTypeBL.Get(id);//.FirstOrDefaultAsync(m => m.Id == id);
+            lstExpenseType = expenseTypeBL.GetByID(ID);
+
             if (lstExpenseType == null)
                 return NotFound();
-            return Ok(lstExpenseType);            
+            return Ok(lstExpenseType);
         }
-               
+
+        [HttpGet("GetExpenseTypeByName")]
+        public async Task<ActionResult<ExpenseTypeEntity>> GetByName(string name)
+        {
+
+            List<ExpenseTypeEntity> lstExpenseType = new List<ExpenseTypeEntity>();
+            lstExpenseType = expenseTypeBL.GetByName(name);
+
+            if (lstExpenseType == null)
+                return NotFound();
+            return Ok(lstExpenseType);
+        }
+
 
         [HttpPut("UpdateExpenseType")]
-        public async Task<HttpStatusCode> UpdateExpenseType(ExpenseTypeEntity expenseType)
+        public async Task<ActionResult<HttpStatusCode>> Update(ExpenseTypeEntity expenseType)
         {
-            logger.LogInformation("UpdateExpenseType");
-            var entity = await dbContext.ExpenseTypes.FirstOrDefaultAsync(x => x.ID == expenseType.ID);
+            bool isUpdated = expenseTypeBL.Update(expenseType);
 
-            entity.Name = expenseType.Name;
-            entity.Description = expenseType.Description;            
+            if (isUpdated)
+                return HttpStatusCode.Created;
+            else
+                return HttpStatusCode.NotModified;
 
-            await dbContext.SaveChangesAsync();
-            return HttpStatusCode.OK;
-        }        
+        }
+
+        [HttpDelete("DeleteExpenseType")]     
+        public async Task<ActionResult<HttpStatusCode>> Delete(ExpenseTypeEntity expenseType)
+        {
+            bool isDeleted = expenseTypeBL.Delete(expenseType);
+
+            if (isDeleted)
+                return HttpStatusCode.Created;
+            else
+                return HttpStatusCode.NotModified;
+
+        }
+
+        // Hard Delete From Database
+        [HttpDelete("HardDeleteExpenseType")]
+        public async Task<ActionResult<HttpStatusCode>> Delete(int expenseTypeID)
+        {
+            bool isDeleted = expenseTypeBL.Delete(expenseTypeID);
+
+            if (isDeleted)
+                return HttpStatusCode.Created;
+            else
+                return HttpStatusCode.NotModified;
+        }
+
     }
 }

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLACKY.WebAPI", "BLACKY.Web
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLACKY.AzureFunctions", "BLACKY.AzureFunctions\BLACKY.AzureFunctions.csproj", "{344BF40D-E9AF-4343-ADEC-BFFBF45D0670}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLACKY.ConsoleApplication", "BLACKY.ConsoleApplication\BLACKY.ConsoleApplication.csproj", "{26761606-C4FF-455A-AFFF-8D96FC1FE4CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLACKY.ConsoleApplication", "BLACKY.ConsoleApplication\BLACKY.ConsoleApplication.csproj", "{26761606-C4FF-455A-AFFF-8D96FC1FE4CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

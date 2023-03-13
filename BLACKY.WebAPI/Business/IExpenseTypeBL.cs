@@ -4,9 +4,12 @@ namespace BLACKY.WebAPI.Business
 {
     public interface IExpenseTypeBL
     {
-        int Add(ExpenseTypeEntity expenseType);
-        List<ExpenseTypeEntity> Get(int? id);        
-        int Update(ExpenseTypeEntity expenseType);
-        int Delete(ExpenseTypeEntity expenseType);        
+        int Create(ExpenseTypeEntity expenseType);
+        List<ExpenseTypeEntity> GetByID(int? expenseTypeID);
+        List<ExpenseTypeEntity> GetByName(string? expenseTypeName);
+        bool Update(ExpenseTypeEntity expenseType);
+        bool Delete(ExpenseTypeEntity expenseType);        
+        // Hard Delete From Database
+        bool Delete(int expenseTypeID);
     }
 }

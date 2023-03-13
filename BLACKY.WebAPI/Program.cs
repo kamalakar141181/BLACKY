@@ -16,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("SQLAppDbContext")));
 builder.Services.AddTransient<IExpenseTypeBL, ExpenseTypeBL>();
+builder.Services.AddTransient<IUserBL, UserBL>();
 builder.Services.AddTransient<ISqlHelper, SqlHelper>();
 builder.Services.AddTransient<IConnection, Connection>();
 builder.Logging.AddNLog();

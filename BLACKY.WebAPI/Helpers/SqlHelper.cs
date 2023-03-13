@@ -140,7 +140,7 @@ namespace BLACKY.WebAPI.Helpers
             try
             {
                 OpenConnection();
-                List<T> data = dbConnection.Query<T>(storedProcedure, dynamicParameters, commandType: CommandType.Text, commandTimeout: 200).ToList();
+                List<T> data = dbConnection.Query<T>(storedProcedure, dynamicParameters, commandType: CommandType.StoredProcedure, commandTimeout: 600).ToList();
                 return data;
             }
             catch (Exception ex)
@@ -159,7 +159,7 @@ namespace BLACKY.WebAPI.Helpers
             try
             {
                 OpenConnection();
-                T data = dbConnection.ExecuteScalar<T>(storedProcedure, dynamicParameters, commandType: CommandType.Text, commandTimeout: 200);
+                T data = dbConnection.ExecuteScalar<T>(storedProcedure, dynamicParameters, commandType: CommandType.StoredProcedure, commandTimeout: 600);
                 return data;
             }
             catch (Exception ex)
@@ -201,7 +201,7 @@ namespace BLACKY.WebAPI.Helpers
             try
             {
                 OpenConnection();
-                dbConnection.Execute(storedProcedure, dynamicParameters, commandType: CommandType.StoredProcedure, commandTimeout: 200);                
+                dbConnection.Execute(storedProcedure, dynamicParameters, commandType: CommandType.StoredProcedure, commandTimeout: 600);                
             }
             catch (Exception ex)
             {
