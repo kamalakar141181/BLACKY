@@ -16,7 +16,7 @@ namespace BLACKY.WebAPI.Business
             _sqlHelper = sqlHelper;
         }
 
-        public int Create(ExpenseTypeEntity expenseType)
+        public int CreateExpenseType(ExpenseTypeEntity expenseType)
         {
             int returnValue = 0;
             DynamicParameters dynamicParameters = new DynamicParameters();
@@ -35,19 +35,19 @@ namespace BLACKY.WebAPI.Business
             return returnValue;
         }
         
-        public List<ExpenseTypeEntity> GetByID(int? expenseTypeID)
+        public List<ExpenseTypeEntity> GetExpenseTypeByID(int? expenseTypeID)
         {
             List<ExpenseTypeEntity> lstResult = new List<ExpenseTypeEntity>();
             DynamicParameters dynamicParameters = new DynamicParameters();
             if (expenseTypeID > 0)
             {
-                dynamicParameters.Add("ExpID", expenseTypeID, DbType.Int32, ParameterDirection.Input);
+                dynamicParameters.Add("@ID", expenseTypeID, DbType.Int32, ParameterDirection.Input);
             }
             lstResult = _sqlHelper.GetData<ExpenseTypeEntity>("spGetExpenseTypeByID", dynamicParameters,CommandType.StoredProcedure);
             return lstResult;
         }
 
-        public List<ExpenseTypeEntity> GetByName(string? expenseTypeName)
+        public List<ExpenseTypeEntity> GetExpenseTypeByName(string? expenseTypeName)
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             if(!string.IsNullOrEmpty(expenseTypeName))
@@ -57,7 +57,7 @@ namespace BLACKY.WebAPI.Business
             
             return _sqlHelper.GetData<ExpenseTypeEntity>("spGetExpenseTypeByName", dynamicParameters, CommandType.StoredProcedure);
         }
-        public bool Update(ExpenseTypeEntity expenseType)
+        public bool UpdateExpenseType(ExpenseTypeEntity expenseType)
         {
             bool isUpdated = false;
             DynamicParameters dynamicParameters = new DynamicParameters();
@@ -72,7 +72,7 @@ namespace BLACKY.WebAPI.Business
             return isUpdated;
         }
 
-        public bool Delete(ExpenseTypeEntity expenseType)
+        public bool DeleteExpenseType(ExpenseTypeEntity expenseType)
         {
             bool isDeleted = false;
             DynamicParameters dynamicParameters = new DynamicParameters();
@@ -88,7 +88,7 @@ namespace BLACKY.WebAPI.Business
         }
 
         // Hard Delete From Database
-        public bool Delete(int expenseTypeID)
+        public bool HardDeleteExpenseType(int expenseTypeID)
         {
             bool isDeleted = false;
             DynamicParameters dynamicParameters = new DynamicParameters();

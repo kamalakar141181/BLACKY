@@ -1,6 +1,7 @@
 ﻿using BLACKY.WebAPI.Business;
 using BLACKY.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,8 +14,13 @@ namespace BLACKY.WebAPI.Controllers
     {
         private readonly AppDbContext dbContext;
         private readonly ILogger<ExpenseTypeController> logger;
-        private readonly IExpenseTypeBL expenseTypeBL;        
+        private readonly IExpenseTypeBL expenseTypeBL;
 
+        JsonSerializerSettings setting = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore
+        };
         public ExpenseTypeController(IExpenseTypeBL expenseTypeBL, AppDbContext dbContextSQL, ILogger<ExpenseTypeController> logger)
         {
             this.dbContext = dbContextSQL;
@@ -23,14 +29,16 @@ namespace BLACKY.WebAPI.Controllers
         }
 
         [HttpPost("CreateExpenseType")]
-        public async Task<HttpStatusCode> Create(ExpenseTypeEntity expenseType)
+        public async Task<HttpStatusCode> CreateExpenseType(ExpenseTypeEntity expenseType)
         {
             logger.LogDebug("Hey, this is a DEBUG message.");
             logger.LogInformation("Hey, this is an INFO message.");
             logger.LogWarning("Hey, this is a WARNING message.");
             logger.LogError("Hey, this is an ERROR message.");
 
-            int generatedID =  expenseTypeBL.Create(expenseType);
+            logger.LogTrace(JsonConvert.SerializeObject(expenseType, Formatting.Indented, setting));
+
+            int generatedID =  expenseTypeBL.CreateExpenseType(expenseType);
             if (generatedID > 0)
                 return HttpStatusCode.Created;
             else
@@ -39,10 +47,12 @@ namespace BLACKY.WebAPI.Controllers
          
 
         [HttpGet("GetExpenseTypeByID")]
-        public async Task<ActionResult<ExpenseTypeEntity>> GetByID(int ID)
+        public async Task<ActionResult<ExpenseTypeEntity>> GetExpenseTypeByID(int ID)
         {
+            logger.LogTrace(JsonConvert.SerializeObject(ID, Formatting.Indented, setting));
+
             List<ExpenseTypeEntity> lstExpenseType = new List<ExpenseTypeEntity>();
-            lstExpenseType = expenseTypeBL.GetByID(ID);
+            lstExpenseType = expenseTypeBL.GetExpenseTypeByID(ID);
 
             if (lstExpenseType == null)
                 return NotFound();
@@ -50,11 +60,12 @@ namespace BLACKY.WebAPI.Controllers
         }
 
         [HttpGet("GetExpenseTypeByName")]
-        public async Task<ActionResult<ExpenseTypeEntity>> GetByName(string name)
+        public async Task<ActionResult<ExpenseTypeEntity>> GetExpenseTypeByName(string username)
         {
+            logger.LogTrace(JsonConvert.SerializeObject(username, Formatting.Indented, setting));
 
             List<ExpenseTypeEntity> lstExpenseType = new List<ExpenseTypeEntity>();
-            lstExpenseType = expenseTypeBL.GetByName(name);
+            lstExpenseType = expenseTypeBL.GetExpenseTypeByName(username);
 
             if (lstExpenseType == null)
                 return NotFound();
@@ -63,9 +74,11 @@ namespace BLACKY.WebAPI.Controllers
 
 
         [HttpPut("UpdateExpenseType")]
-        public async Task<ActionResult<HttpStatusCode>> Update(ExpenseTypeEntity expenseType)
+        public async Task<ActionResult<HttpStatusCode>> UpdateExpenseType(ExpenseTypeEntity expenseType)
         {
-            bool isUpdated = expenseTypeBL.Update(expenseType);
+            logger.LogTrace(JsonConvert.SerializeObject(expenseType, Formatting.Indented, setting));
+
+            bool isUpdated = expenseTypeBL.UpdateExpenseType(expenseType);
 
             if (isUpdated)
                 return HttpStatusCode.Created;
@@ -75,9 +88,11 @@ namespace BLACKY.WebAPI.Controllers
         }
 
         [HttpDelete("DeleteExpenseType")]     
-        public async Task<ActionResult<HttpStatusCode>> Delete(ExpenseTypeEntity expenseType)
+        public async Task<ActionResult<HttpStatusCode>> DeleteExpenseType(ExpenseTypeEntity expenseType)
         {
-            bool isDeleted = expenseTypeBL.Delete(expenseType);
+            logger.LogTrace(JsonConvert.SerializeObject(expenseType, Formatting.Indented, setting));
+
+            bool isDeleted = expenseTypeBL.DeleteExpenseType(expenseType);
 
             if (isDeleted)
                 return HttpStatusCode.Created;
@@ -88,9 +103,11 @@ namespace BLACKY.WebAPI.Controllers
 
         // Hard Delete From Database
         [HttpDelete("HardDeleteExpenseType")]
-        public async Task<ActionResult<HttpStatusCode>> Delete(int expenseTypeID)
+        public async Task<ActionResult<HttpStatusCode>> HardDeleteExpenseType(int expenseTypeID)
         {
-            bool isDeleted = expenseTypeBL.Delete(expenseTypeID);
+            logger.LogTrace(JsonConvert.SerializeObject(expenseTypeID, Formatting.Indented, setting));
+
+            bool isDeleted = expenseTypeBL.HardDeleteExpenseType(expenseTypeID);
 
             if (isDeleted)
                 return HttpStatusCode.Created;
