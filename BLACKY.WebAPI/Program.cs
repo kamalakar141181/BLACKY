@@ -1,6 +1,7 @@
 using BLACKY.WebAPI.Business;
 using BLACKY.WebAPI.Helpers;
 using BLACKY.WebAPI.Models;
+using BLACKY.WebAPI.Security;
 using Microsoft.EntityFrameworkCore;
 using NLog.Extensions.Logging;
 using NLog.Web;
@@ -30,7 +31,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+//app.UseMiddleware<ApiKeyMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
